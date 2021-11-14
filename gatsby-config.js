@@ -1,18 +1,25 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: `gatsby-remark-related-posts sample blog`,
     author: {
-      name: `Kyle Mathews`,
-      summary: `who lives and works in San Francisco building useful things.`,
+      name: `sititou70`,
+      summary: `gatsby-remark-related-posts developer`,
     },
-    description: `A starter blog demonstrating what Gatsby can do.`,
-    siteUrl: `https://gatsbystarterblogsource.gatsbyjs.io/`,
+    description: `gatsby-remark-related-posts sample blog`,
+    siteUrl: `https://github.com/sititou70/gatsby-remark-related-posts`,
     social: {
-      twitter: `kylemathews`,
+      twitter: `sititou70`,
     },
   },
   plugins: [
     `gatsby-plugin-image`,
+    {
+      resolve: "gatsby-remark-related-posts",
+      options: {
+        target_node: "Mdx",
+        getMarkdown: node => node.rawBody,
+      },
+    },
     {
       resolve: `gatsby-source-filesystem`,
       options: {

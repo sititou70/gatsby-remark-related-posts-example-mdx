@@ -9,7 +9,6 @@ import { MDXRenderer } from "gatsby-plugin-mdx"
 const BlogPostTemplate = ({ data, location }) => {
   const post = data.mdx
   const siteTitle = data.site.siteMetadata?.title || `Title`
-  const { previous, next } = data
 
   return (
     <Layout location={location} title={siteTitle}>
@@ -29,31 +28,16 @@ const BlogPostTemplate = ({ data, location }) => {
           <Bio />
         </footer>
       </article>
-      <nav className="blog-post-nav">
-        <ul
-          style={{
-            display: `flex`,
-            flexWrap: `wrap`,
-            justifyContent: `space-between`,
-            listStyle: `none`,
-            padding: 0,
-          }}
-        >
-          <li>
-            {previous && (
-              <Link to={previous.slug} rel="prev">
-                ← {previous.frontmatter.title}
-              </Link>
-            )}
-          </li>
-          <li>
-            {next && (
-              <Link to={next.slug} rel="next">
-                {next.frontmatter.title} →
-              </Link>
-            )}
-          </li>
-        </ul>
+
+      <nav>
+        <h2>Related Posts</h2>
+        <ol>
+          {data.relatedMdxs.posts.slice(0, 3).map(x => (
+            <li key={x.slug}>
+              <Link to={"/" + x.slug}>{x.frontmatter.title}</Link>
+            </li>
+          ))}
+        </ol>
       </nav>
     </Layout>
   )
@@ -62,11 +46,7 @@ const BlogPostTemplate = ({ data, location }) => {
 export default BlogPostTemplate
 
 export const pageQuery = graphql`
-  query BlogPostBySlug(
-    $id: String!
-    $previousPostId: String
-    $nextPostId: String
-  ) {
+  query BlogPostBySlug($id: String!) {
     site {
       siteMetadata {
         title
@@ -81,16 +61,12 @@ export const pageQuery = graphql`
         date(formatString: "MMMM DD, YYYY")
       }
     }
-    previous: mdx(id: { eq: $previousPostId }) {
-      slug
-      frontmatter {
-        title
-      }
-    }
-    next: mdx(id: { eq: $nextPostId }) {
-      slug
-      frontmatter {
-        title
+    relatedMdxs(parent: { id: { eq: $id } }) {
+      posts {
+        frontmatter {
+          title
+        }
+        slug
       }
     }
   }
